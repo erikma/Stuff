@@ -122,7 +122,7 @@ Time to test the server. Let's power off the TP-Link and the Pi to simulate when
 1. In MineCraft connect to the server at 192.168.0.50. You should be able to enter the world.
 
 ### Set the MineCraft Server to Run On Boot
-No screen when running the RPi in your car, time to set up the MineCraft server to run automatically. If you followed Raspberry Pi defaults, the 'pi' user automatically logs onto the machine. So we need to run the runminecraft.sh when the pi user logs on.
+No screen when running the RPi in your car, time to set up the MineCraft server to run automatically. If you followed Raspberry Pi defaults, the 'pi' user automatically logs onto the machine. So we need to run the runminecraft.sh script when the pi user logs on.
 
 We do this by adding a command to the hidden .profile file in the 'pi' user.
 
