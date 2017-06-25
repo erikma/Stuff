@@ -16,8 +16,9 @@ Tried MineCraft official server 1.12 on an RPi 2, did not make the grade, tons o
 
 Tried Spigot's server and it performed better, far fewer hiccups, but still some lag from clients running on a local wifi network with direct Ethernet jacked between the wifi endpoint and the RPi (see below).
  
-Upgrade to an RPi 3: Data pending. One of the reasons for this repo is to move scripts
-between Pi machines.
+Upgrade to an RPi 3: Very obviously faster in all respects. No overclocking with raspi-config but things are fine with the Cortex A8 ARM core and 1200 MHz clock. No particular lag with the Spigot server even with regular view distance, villager spawning, and other default options turned on. Winner!
+
+Note: Only PC/Mac versions of MineCraft, running at the current version of the server you can see in the runminecraft.sh file in this repo, can connect. IPad/Android MineCraft PE editions cannot connect. Perhaps the "Better Together" MineCraft version for IPad coming out summer of 2017 could possibly interoperate.
 
 ## Setting Up a WiFi Adapter for Disconnected Car Use
 Let's start with the wifi adapter, our TP-Link.
@@ -74,8 +75,9 @@ We found the Spigot server to be better than the default MineCraft server (see t
 
 1. Run this command to download and compile the Spigot server: `sudo ./upgradeMinecraft.sh`
 1. This can take quite awhile (20+ minutes) as it downloads, compiles, and runs tests against the Spigot server installation.
+1. Since we'll be running in a disconnected mode without internet, change the `online-mode=true` setting in the MineCraft service configuration to `online-mode=false` using `nano MineCraft/server.properties` (save with Ctrl+O and Enter, then exit with Ctrl+X).
 1. Try running the server with `./runminecraft.sh`
-1. It should error out that you need to accept the EULA to continue. To do this, edit eula.txt using the command `nano eula.txt` and change the `eula=false` line to `eula=TRUE` then save with Ctrl+O and exit with Ctrl+X
+1. It should error out that you need to accept the EULA to continue. To do this, edit eula.txt using the command `nano eula.txt` and change the `eula=false` line to `eula=TRUE` then save with Ctrl+O and Enter, then exit with Ctrl+X
 1. Run `./runminecraft.sh` again. It should start up and create the initial world state.
 1. Ctrl+C to break out of the server.
 
@@ -84,6 +86,10 @@ Be careful here! You're about to change the default network settings on your Ras
 
 1. From the console run the command: `sudo nano /etc/network/interfaces`
 1. This opens a text editor called Nano and is looking at the configuration for what physical networks your Pi wants to connect to.
+1. Comment out this line (add the # comment in front of it):
+```
+#iface eth0 inet manual
+```
 1. Add the following lines to the configuration, but change THECAR to the name of your wifi network:
 ```
 # THECAR wifi adapter ethernet connection configuration
@@ -114,7 +120,6 @@ Time to test the server. Let's power off the TP-Link and the Pi to simulate when
 1. After about a minute the MineCraft server should become available on the wifi network.
 1. Connect a PC containing the same MineCraft version as the server to the TP-Link network (THECAR or similar).
 1. In MineCraft connect to the server at 192.168.0.50. You should be able to enter the world.
-1. Do the same for 
 
 ### Reconnect Your Pi To Your Home Network for Upgrades or Debugging
 You might find yourself needing to contact the Internet again after making the network changes above. Here's how to restore it temporarily. To get ready for TP-Link again, reverse these changes or make your /etc/network/interfaces look like the previous section.
