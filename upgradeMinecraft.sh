@@ -16,7 +16,7 @@ echo
 echo Upgrading all packages on system
 echo
 apt-get update
-apt-get safe-upgrade
+apt-get upgrade
 
 if [-f BuildTools.jar]; then
     rm BuildTools.jar

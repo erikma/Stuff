@@ -44,17 +44,16 @@ In this section we'll do the various manual steps needed to prepare the Pi machi
 1. Attach an HDMI monitor, keyboard, and mouse to your Pi, plug in the Raspbian Micro SD card, then apply USB power.
 1. Let Raspbian do all its first-boot steps and get you into the graphical user interface.
 1. Join your home (not the TP-Link) wireless network.
-1. Open the Configuration application (or use `sudo raspi-config` from a console command line).
+1. Open the Configuration application (Raspberry menu -> Preferences -> Raspberry Pi Configuration) (or use `sudo raspi-config` from a console command line).
 1. Choose Update and let it update to latest and restart itself.
 1. Change the default password to something different and secure. Write it down on the piece of paper and the Post-It you created previously.
 1. Set the host name to something recognizable like 'PiGameServer'
-1. Change the Boot Options -> Desktop/CLI to "Console Autologin" (the B2 option).
-1. Change the Boot Options -> Wait for Network at Boot to Yes
-1. Chagne the Boot Options -> Splash Screen to No
-1. Overclock your Pi to a higher setting. We need raw CPU power for running this server.
-1. Change Advanced Options -> Memory Split to '16' to allow more memory for the game server software and less for running the text console.
-1. Reboot the Pi using the `reboot` command. It should come back up to a black console instead of the graphical window interface.
-1. Upgrade your system to the latest packages and kernel using `sudo apt-get upgrade` then `sudo apt-get safe-upgrade`
+1. Change the System tab -> Boot to "To CLI"
+1. Change the System tab -> Network at Boot to Wait
+1. Change the System tab -> Splash Screen to Disabled
+1. Change Performance -> GPU Memory '16' (MB) to allow more memory for the game server software and less for running the text console.
+1. Reboot the Pi. It should come back up to a text console instead of the graphical window interface.
+1. Upgrade your system to the latest packages and kernel using `sudo apt-get upgrade` then `sudo apt-get update`
 1. Reboot using the `reboot` command.
 
 ### Pulling A Copy Of This Repo
@@ -100,8 +99,18 @@ iface eth0 inet static
 1. Save the file using the Ctrl+O (capital O as in Opera) key and then press Enter.
 1. Exit Nano using the Ctrl+X key
 
-### Reconnect Your Pi To Your Home Network
-You might find yourself needing to contact the Internet again after making the network changes above. Here's how to restore it temporarily. To get ready for TP-Link again, reverse these change or make your /etc/network/interfaces look like the previous section.
+### Test your Server
+Time to test the server. Let's power off the TP-Link and the Pi to simulate when you first turn them on in the car.
+
+1. Power on TP-Link and Raspberry Pi
+1. Wait for the Pi to boot into the console, then run `runminecraft`
+1. After about a minute the MineCraft server should become available on the wifi network.
+1. Connect a PC containing the same MineCraft version as the server to the TP-Link network (THECAR or similar).
+1. In MineCraft connect to the server at 192.168.0.50. You should be able to enter the world.
+1. Do the same for 
+
+### Reconnect Your Pi To Your Home Network for Upgrades or Debugging
+You might find yourself needing to contact the Internet again after making the network changes above. Here's how to restore it temporarily. To get ready for TP-Link again, reverse these changes or make your /etc/network/interfaces look like the previous section.
 
 1. From the console run the command: `sudo nano /etc/network/interfaces`
 1. The # character is a comment. You're going to remove this from one place and add it in a few others to change the settings that your Pi uses.
