@@ -6,6 +6,7 @@
 # the static IP address to the wifi adapter using 'sudo nano /etc/network/interfaces' and commenting out
 # the static server configuration for eth0, and enabling automatic DHCP instead.
 
+cd ~/Stuff
 if [! -d ./MineCraft]; then
     mkdir ./MineCraft
 fi
