@@ -7,7 +7,7 @@
 # the static server configuration for eth0, and enabling automatic DHCP instead.
 
 cd ~/Stuff
-if [! -d ./MineCraft]; then
+if [ ! -d ./MineCraft ]; then
     mkdir ./MineCraft
 fi
 cd ./MineCraft
@@ -19,7 +19,7 @@ echo
 apt-get update
 apt-get upgrade
 
-if [-f ./BuildTools.jar]; then
+if [ -f ./BuildTools.jar ]; then
     rm ./BuildTools.jar
 fi
 

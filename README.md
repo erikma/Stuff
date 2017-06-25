@@ -73,17 +73,21 @@ We found the Spigot server to be better than the default MineCraft server (see t
 
 1. Run this command to download and compile the Spigot server: `sudo ./upgradeMinecraft.sh`
 1. This can take quite awhile (20+ minutes) as it downloads, compiles, and runs tests against the Spigot server installation.
+1. Try running the server with `./runminecraft.sh`
+1. It should error out that you need to accept the EULA to continue. To do this, edit eula.txt using the command `nano eula.txt` and change the `eula=false` line to `eula=TRUE` then save with Ctrl+O and exit with Ctrl+X
+1. Run `./runminecraft.sh` again. It should start up and create the initial world state.
+1. Ctrl+C to break out of the server.
 
-### Setting Up the Wireless Network
+### Setting Up the Wired Network to the TP-Link
 Be careful here! You're about to change the default network settings on your Raspberry Pi. This will take it off of your home network and make it want to talk directly to the TP-Link over a direct-connect ethernet cable. There are instructions below for how to change things back to get back on your home network temporarily, for example when you want to download a newer MineCraft server version.
 
 1. From the console run the command: `sudo nano /etc/network/interfaces`
-1. This opens a text editor called Nano and is looking at what physical networks your Pi wants to connect to.
+1. This opens a text editor called Nano and is looking at the configuration for what physical networks your Pi wants to connect to.
 1. Add the following lines to the configuration, but change THECAR to the name of your wifi network:
 ```
-# THECAR wifi adapter LAN connection configuration
+# THECAR wifi adapter ethernet connection configuration
 # The DHCP range on the TP-Link is 192.168.0.100-199, our static IP lies outside that.
-# THECAR TP-Link wifi adapter claims static 192.168.0.254 as its management and gateway interface
+# THECAR TP-Link wifi adapter claims static IP 192.168.0.254 as its management and gateway interface
 auto eth0
 allow-hotplug eth0
 iface eth0 inet static
