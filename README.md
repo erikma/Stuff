@@ -1,18 +1,122 @@
 Random scripts and tools for using across machines.
 
-= Running a MineCraft Server on a Raspberry Pi Over WiFi in a Car =
-Lots of articles on the web of varying age for how to get an RPi to run a MC server,
-not much glue scripting and how-to. What we wanted was to be able to have PCs running
-on battery and a local low-power wifi network in our car so kids in the vehicle could\
-all play, at least until the batteries ran out.
+# Running a MineCraft Server on a Raspberry Pi Over WiFi in a Car
+Lots of articles on the web of varying age for how to get an RPi to run a MineCraft server, not much glue scripting and how-to. What we wanted was to be able to have PCs running on battery and a local low-power wifi network in our car so kids in the vehicle could all play, at least until the PC batteries run out, while maintaining the world state during multi-day trips.
 
-== Compatibility and Performance ==
+Obviously any game server that is capable of running on a Pi can benefit here.
+
+## Parts
+* Raspberry Pi 3 (see Compatibility and Performance section below for why not something earlier). Power requirement of about 2 amps when running hot might be too much for your car USB power ports so check your specs.
+* TP-Link TL-MR3020. Low power and can run on USB power driven by the car.
+* 2 USB power cords for running the Pi and the wifi adapter in the car. Hopefully your vehicle has enough USB power ports in the same spot so you can run both of these at once.
+* Short ethernet cable for joining the WAN port on the TP-Link to the ethernet port on the Pi. Why? The less load on the wifi network and over-the-air bandwidth the better your latency will be. (If you've having a game party remember to join the machines over a wired ethernet network where possible to get far lower lag. Unless you live in the middle of nowhere where there are few wifi networks competing with each other in the same air. And even then you're better off. Wifi is great but sort of fragile and latency/lag varies a lot. RIP Charles Thacker.)
+
+## Compatibility and Performance
 Tried MineCraft official server 1.12 on an RPi 2, did not make the grade, tons of lag.
 
-Tried Spigot's server and it performed better, far fewer hiccups, but still some lag from clients running on
-a local wifi network with direct Ethernet jacked between the wifi endpoint and the RPi.
+Tried Spigot's server and it performed better, far fewer hiccups, but still some lag from clients running on a local wifi network with direct Ethernet jacked between the wifi endpoint and the RPi (see below).
  
 Upgrade to an RPi 3: Data pending. One of the reasons for this repo is to move scripts
 between Pi machines.
 
+## Setting Up a WiFi Adapter for Disconnected Car Use
+Let's start with the wifi adapter, our TP-Link.
 
+1. Set the hardware switch to 3G/4G. We found that setting the hardware switch to anything else would just cause problems.
+1. Connect the TP-Link to your network using the wired network. If need be you can just direct connect the TP-Link to a machine without a switch.
+1. Open a browser and go to the adapter's settings page: http://192.168.0.254 (also listed on your TP-Link's sticker)
+1. Log in with the default credentials (also listed on your TP-Link's sticker): username admin, password admin.
+1. You can leave the TP-Link in 3G/4G mode. We'll be leaving the 3G/4G USB port unconnected, which defaults to letting us use the WAN ethernet port as a regular network port. You could in fact connect such a cell data adapter if you have one and get it working; we're not that fancy.
+1. Set the network name to something unique-sounding. We'll use "THECAR" here but if everyone were to use that name there would be a lot of confusion. Include a fragment of your name or something else recognizable.
+1. Set up WPA2-PSK network security and set up a moderately strong password. Write down the password on a piece of paper, as well as on a Post-It note that you'll attach to the TP-Link.
+1. Change the admin password on the TP-Link to something secure (but NOT "admin" or anything like it) and write it down on the paper and the Post-It you created in the previous step.
+1. Put the paper away in a safe place and attach the Post-It to the TP-Link. (If someone gets hold of the TP-Link, it can be factory-reset anyway, and you may need the passwords when you're on the road.)
+1. Reboot the TP-Link if you have not already. Verify the new admin password works for logging in.
+1. Make sure your devices can see your new wifi network (your better name than "THECAR"), and join it with the password you set up.
+
+## Setting Up a Raspberry Pi for a Disconnected Car Network
+Lots of steps here so we'll break it into sections. You'll need to do all this at home with your own wifi network available.
+
+### Booting the Raspberry Pi and Modifying Settings
+In this section we'll do the various manual steps needed to prepare the Pi machine's global settings to reduce power and CPU usage and get ready for installing the MineCraft server.
+
+1. Prepare a copy of Raspbian on an 8GB or larger Micro SD card. You can start here: https://www.raspberrypi.org/downloads/raspbian/
+1. Attach an HDMI monitor, keyboard, and mouse to your Pi, plug in the Raspbian Micro SD card, then apply USB power.
+1. Let Raspbian do all its first-boot steps and get you into the graphical user interface.
+1. Join your home (not the TP-Link) wireless network.
+1. Open the Configuration application (or use `sudo raspi-config` from a console command line).
+1. Choose Update and let it update to latest and restart itself.
+1. Change the default password to something different and secure. Write it down on the piece of paper and the Post-It you created previously.
+1. Set the host name to something recognizable like 'PiGameServer'
+1. Change the Boot Options -> Desktop/CLI to "Console Autologin" (the B2 option).
+1. Change the Boot Options -> Wait for Network at Boot to Yes
+1. Chagne the Boot Options -> Splash Screen to No
+1. Overclock your Pi to a higher setting. We need raw CPU power for running this server.
+1. Change Advanced Options -> Memory Split to '16' to allow more memory for the game server software and less for running the text console.
+1. Reboot the Pi using the `reboot` command. It should come back up to a black console instead of the graphical window interface.
+1. Upgrade your system to the latest packages and kernel using `sudo apt-get upgrade` then `sudo apt-get safe-upgrade`
+1. Reboot using the `reboot` command.
+
+### Pulling A Copy Of This Repo
+Git is built into Raspbian as a default package so we can usually just use it.
+
+1. After rebooting, the console should show a prompt like `pi@PiGameServer:~ $" which tells us we're in the user directory ("~") of the current user pi on PiGameServer.
+1. Run `git clone https://github.com/erikma/Stuff .` to clone this repo to your Pi user directory. We're deliberately installing it in the default user directory. If you're savvy you can clone it into a subdirectory. The instructions below assume you ran the command above.
+1. Make our two main scripts runnable on your system using the following commands:
+```
+chmod +x upgradeMinecraft.sh
+chmod +x runminecraft.sh
+```
+
+### Compile and Install the Spigot Server
+We found the Spigot server to be better than the default MineCraft server (see the compatibility and performance section). You can check it out and see the current release version at https://spigotmc.org/wiki/buildtools
+
+1. Run this command to download and compile the Spigot server: `sudo upgradeMinecraft`
+1. This can take quite awhile as it downloads, compiles, and runs tests against the Spigot server installation.
+1. Reboot using the `reboot` command.
+
+### Setting Up the Wireless Network
+Be careful here! You're about to change the default network settings on your Raspberry Pi. This will take it off of you home network and make it want to talk directly to the TP-Link. There are instructions below for how to change things back to get back on your home network temporarily, for example when you want to download a newer MineCraft server version.
+
+1. From the console run the command: `sudo nano /etc/network/interfaces`
+1. This opens a text edit called Nano and is looking at what networks your Pi wants to connect to.
+1. Add the following lines to the configuration, but change THECAR to the name of your wifi network:
+```
+# THECAR wifi adapter LAN connection configuration
+# The DHCP range on the TP-Link is 192.168.0.100-199, our static IP lies outside that.
+# THECAR TP-Link wifi adapter claims static 192.168.0.254 as its management and gateway interface
+auto eth0
+allow-hotplug eth0
+iface eth0 inet static
+    address 192.168.0.50
+    netmask 255.255.255.0
+    gateway 192.168.0.254
+    dns-nameservers 192.168.0.254
+
+# Uncomment this and comment block above if connecting ethernet to something besides THECAR TP-Link.
+# iface eth0 inet dhcp
+```
+1. Be sure there are no lines like `iface eth0 inet dhcp` anywhere else but in the text  block you added above.
+1. Save the file using the Ctrl+O (capital O as in Opera) key and then press Enter.
+1. Exit Nano using the Ctrl+X key
+
+### Reconnect Your Pi To Your Home Network
+You might find yourself needing to contact the Internet again after making the network changes above. Here's how to restore it temporarily. To get ready for TP-Link again, reverse these change or make your /etc/network/interfaces look like the previous section.
+
+1. From the console run the command: `sudo nano /etc/network/interfaces`
+1. The # character is a comment. You're going to remove this from one place and add it in a few others to change the settings that your Pi uses.
+1. Uncomment the `iface eth0 inet dhcp` line by removing the # and the space. It should look like:
+```
+iface eth0 inet dhcp
+```
+1. Add a # comment character to these lines so they look like this:
+```
+#iface eth0 inet static
+#    address 192.168.0.50
+#    netmask 255.255.255.0
+#    gateway 192.168.0.254
+#    dns-nameservers 192.168.0.254
+```
+1. Save the file using the Ctrl+O (capital O as in Opera) key and then press Enter.
+1. Exit Nano using the Ctrl+X key
+1. Reboot
