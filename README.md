@@ -48,10 +48,11 @@ In this section we'll do the various manual steps needed to prepare the Pi machi
 1. Choose Update and let it update to latest and restart itself.
 1. Change the default password to something different and secure. Write it down on the piece of paper and the Post-It you created previously.
 1. Set the host name to something recognizable like 'PiGameServer'
-1. Change the System tab -> Boot to "To CLI"
+1. Change the System tab -> Boot to "To CLI"(command-line interface)
 1. Change the System tab -> Network at Boot to Wait
 1. Change the System tab -> Splash Screen to Disabled
 1. Change Performance -> GPU Memory '16' (MB) to allow more memory for the game server software and less for running the text console.
+1. If need be, change your localization settings for keyboard and operating system locale. (The default English-UK keyboard works until you need to type symbols and they come out all weird...)
 1. Reboot the Pi. It should come back up to a text console instead of the graphical window interface.
 1. Upgrade your system to the latest packages and kernel using `sudo apt-get upgrade` then `sudo apt-get update`
 1. Reboot using the `reboot` command.
