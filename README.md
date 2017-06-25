@@ -18,7 +18,7 @@ Tried Spigot's server and it performed better, far fewer hiccups, but still some
  
 Upgrade to an RPi 3: Very obviously faster in all respects. No overclocking with raspi-config but things are fine with the Cortex A8 ARM core and 1200 MHz clock. No particular lag with the Spigot server even with regular view distance, villager spawning, and other default options turned on. Winner!
 
-Note: Only PC/Mac versions of MineCraft, running at the current version of the server you can see in the runminecraft.sh file in this repo, can connect. IPad/Android MineCraft PE editions cannot connect. Perhaps the "Better Together" MineCraft version for IPad coming out summer of 2017 could possibly interoperate.
+Note: Only PC/Mac versions of MineCraft, running at the current version of the server you can see in the runminecraft.sh file in this repo, can connect. IPad/Android MineCraft PE editions cannot connect, even if you point it at the PC server default port. Perhaps the "Better Together" MineCraft version for IPad coming out summer of 2017 could possibly interoperate.
 
 ## Setting Up a WiFi Adapter for Disconnected Car Use
 Let's start with the wifi adapter, our TP-Link.
@@ -121,7 +121,22 @@ Time to test the server. Let's power off the TP-Link and the Pi to simulate when
 1. Connect a PC containing the same MineCraft version as the server to the TP-Link network (THECAR or similar).
 1. In MineCraft connect to the server at 192.168.0.50. You should be able to enter the world.
 
-### Reconnect Your Pi To Your Home Network for Upgrades or Debugging
+### Set the MineCraft Server to Run On Boot
+No screen when running the RPi in your car, time to set up the MineCraft server to run automatically. If you followed Raspberry Pi defaults, the 'pi' user automatically logs onto the machine. So we need to run the runminecraft.sh when the pi user logs on.
+
+We do this by adding a command to the hidden .profile file in the 'pi' user.
+
+1. Change to the pi user home directory: `cd ~`
+1. Edit the .profile file: `nano .profile`
+1. Add these lines at the bottom:
+```
+# Run the MineCraft server on startup
+cd ~/Stuff
+./runminecraft.sh
+```
+1. Save and exit with Ctrl+O and Enter, then Ctrl+X
+
+### Reconnecting Your Pi To Your Home Network for Upgrades or Debugging
 You might find yourself needing to contact the Internet again after making the network changes above. Here's how to restore it temporarily. To get ready for TP-Link again, reverse these changes or make your /etc/network/interfaces look like the previous section.
 
 1. From the console run the command: `sudo nano /etc/network/interfaces`
@@ -140,4 +155,5 @@ iface eth0 inet dhcp
 ```
 1. Save the file using the Ctrl+O (capital O as in Opera) key and then press Enter.
 1. Exit Nano using the Ctrl+X key
-1. Reboot
+1. Unplug the network cable between the RPi and the TP-Link
+1. Reboot using the `reboot` command
