@@ -72,14 +72,13 @@ chmod +x runminecraft.sh
 We found the Spigot server to be better than the default MineCraft server (see the compatibility and performance section). You can check it out and see the current release version at https://spigotmc.org/wiki/buildtools
 
 1. Run this command to download and compile the Spigot server: `sudo ./upgradeMinecraft.sh`
-1. This can take quite awhile as it downloads, compiles, and runs tests against the Spigot server installation.
-1. Reboot using the `reboot` command.
+1. This can take quite awhile (20+ minutes) as it downloads, compiles, and runs tests against the Spigot server installation.
 
 ### Setting Up the Wireless Network
 Be careful here! You're about to change the default network settings on your Raspberry Pi. This will take it off of your home network and make it want to talk directly to the TP-Link over a direct-connect ethernet cable. There are instructions below for how to change things back to get back on your home network temporarily, for example when you want to download a newer MineCraft server version.
 
 1. From the console run the command: `sudo nano /etc/network/interfaces`
-1. This opens a text edit called Nano and is looking at what networks your Pi wants to connect to.
+1. This opens a text editor called Nano and is looking at what physical networks your Pi wants to connect to.
 1. Add the following lines to the configuration, but change THECAR to the name of your wifi network:
 ```
 # THECAR wifi adapter LAN connection configuration
@@ -93,7 +92,8 @@ iface eth0 inet static
     gateway 192.168.0.254
     dns-nameservers 192.168.0.254
 
-# Uncomment this and comment block above if connecting ethernet to something besides THECAR TP-Link.
+# Uncomment this iface line, and comment the 'iface eth0' block above,
+# if connecting ethernet to something besides THECAR TP-Link.
 # iface eth0 inet dhcp
 ```
 1. Be sure there are no lines like `iface eth0 inet dhcp` anywhere else but in the text  block you added above.
