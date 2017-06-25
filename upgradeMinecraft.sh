@@ -18,8 +18,8 @@ echo
 apt-get update
 apt-get upgrade
 
-if [-f BuildTools.jar]; then
-    rm BuildTools.jar
+if [-f ./BuildTools.jar]; then
+    rm ./BuildTools.jar
 fi
 
 # 'Spigot' optimized MineCraft server - https://spigotmc.org/wiki/buildtools

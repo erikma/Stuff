@@ -60,7 +60,8 @@ In this section we'll do the various manual steps needed to prepare the Pi machi
 Git is built into Raspbian as a default package so we can usually just use it.
 
 1. After rebooting, the console should show a prompt like `pi@PiGameServer:~ $" which tells us we're in the user directory ("~") of the current user pi on PiGameServer.
-1. Run `git clone https://github.com/erikma/Stuff .` to clone this repo to your Pi user directory. We're deliberately installing it in the default user directory. If you're savvy you can clone it into a subdirectory. The instructions below assume you ran the command above.
+1. Run `git clone https://github.com/erikma/Stuff` to clone this repo to your Pi user directory under the 'Stuff' directory/folder.
+1. Change to the Stuff directory using the `cd ./Stuff` command.
 1. Make our two main scripts runnable on your system using the following commands:
 ```
 chmod +x upgradeMinecraft.sh
@@ -70,12 +71,12 @@ chmod +x runminecraft.sh
 ### Compile and Install the Spigot Server
 We found the Spigot server to be better than the default MineCraft server (see the compatibility and performance section). You can check it out and see the current release version at https://spigotmc.org/wiki/buildtools
 
-1. Run this command to download and compile the Spigot server: `sudo upgradeMinecraft`
+1. Run this command to download and compile the Spigot server: `sudo ./upgradeMinecraft.sh`
 1. This can take quite awhile as it downloads, compiles, and runs tests against the Spigot server installation.
 1. Reboot using the `reboot` command.
 
 ### Setting Up the Wireless Network
-Be careful here! You're about to change the default network settings on your Raspberry Pi. This will take it off of you home network and make it want to talk directly to the TP-Link. There are instructions below for how to change things back to get back on your home network temporarily, for example when you want to download a newer MineCraft server version.
+Be careful here! You're about to change the default network settings on your Raspberry Pi. This will take it off of your home network and make it want to talk directly to the TP-Link over a direct-connect ethernet cable. There are instructions below for how to change things back to get back on your home network temporarily, for example when you want to download a newer MineCraft server version.
 
 1. From the console run the command: `sudo nano /etc/network/interfaces`
 1. This opens a text edit called Nano and is looking at what networks your Pi wants to connect to.
@@ -102,8 +103,9 @@ iface eth0 inet static
 ### Test your Server
 Time to test the server. Let's power off the TP-Link and the Pi to simulate when you first turn them on in the car.
 
+1. Connect the TP-Link to the Raspberry Pi using a short ethernet cable.
 1. Power on TP-Link and Raspberry Pi
-1. Wait for the Pi to boot into the console, then run `runminecraft`
+1. Wait for the Pi to boot into the console, then run `./Stuff/runminecraft.sh`
 1. After about a minute the MineCraft server should become available on the wifi network.
 1. Connect a PC containing the same MineCraft version as the server to the TP-Link network (THECAR or similar).
 1. In MineCraft connect to the server at 192.168.0.50. You should be able to enter the world.
